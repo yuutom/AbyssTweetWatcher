@@ -68,6 +68,24 @@ def main():
   # 新しいランキングファイルを作成
   csv_util_class.create_tweet_ranking_csv()
   
+  # htmlリンクファイルが存在すれば削除
+  if os.path.isfile('html.csv'):
+    os.remove('html.csv')
+  
+  # スコア上位7のツイートリストを作成
+  stop_word_list = csv_util_class.get_stop_word_list('stop_word_list.csv')
+  text_score_list = csv_util_class.create_top_7_tweet_list(stop_word_list)
+  
+  # htmlリンクファイル作成
+  # csv_util_class.create_html_csv(api, text_list)
+  html_list = []
+  for text_score in text_score_list:
+      url = text_score[0]
+      oembed = api.get_oembed(url)
+      html = oembed.get("html")
+      html_list.append([html])
+  csv_util_class.create_html_csv(html_list)
+  
 
 
 def get_wakati_list():
