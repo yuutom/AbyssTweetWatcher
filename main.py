@@ -72,12 +72,11 @@ def main():
   if os.path.isfile('html.csv'):
     os.remove('html.csv')
   
-  # スコア上位7のツイートリストを作成
+  # スコア上位10のツイートリストを作成
   stop_word_list = csv_util_class.get_stop_word_list('stop_word_list.csv')
-  text_score_list = csv_util_class.create_top_7_tweet_list(stop_word_list)
+  text_score_list = csv_util_class.create_top_10_tweet_list(stop_word_list)
   
   # htmlリンクファイル作成
-  # csv_util_class.create_html_csv(api, text_list)
   html_list = []
   for text_score in text_score_list:
       url = text_score[0]
@@ -131,23 +130,34 @@ def get_word_count_result_list():
   # 機械学習モデルを作成
   logreg, vect = ai_util_class.get_logreg_model(text_train, y_train)
   
+  # モデル作成の準備
   text_list = csv_util_class.make_text_list('tweet_test.csv')
   stop_word_list = csv_util_class.get_stop_word_list('stop_word_list.csv')
   mecab = MeCab.Tagger("-Owakati")
   preprocessed_text_list = []
+  
+  # 特徴量を取り出していき、前処理を施す
   for text in text_list:
     preprocessed_text_before = ai_util_class.preprocess(text)
     preprocessed_text = vect.transform([preprocessed_text_before])
+    
+    # もし予測がラベル1ならリストに追加
     if logreg.predict(preprocessed_text.toarray()) == '1':
       preprocessed_text_list.append(preprocessed_text_before)
 
+  # モデルを返却
   vector, word_vector = ai_util_class.get_count_vectorizer(preprocessed_text_list)
   
+  # 格納用の空のリストを定義
   number_of_appearances_list = []
   count_list = [0]*len(vector.get_feature_names())
+  
+  # それぞれの特徴量を抽出し、dictに回数をカウント
   for counts in word_vector:
     for index, num in enumerate(counts):
       count_list[index] = count_list[index] + num
+  
+  # [単語、回数]のリストをリストに追加していき、回数の降順で整理
   for word, count in zip(vector.get_feature_names(), count_list):
     number_of_appearances_list.append([word.replace(' ',''), count])
     number_of_appearances_list.sort(key=lambda x: x[1], reverse=True)

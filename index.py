@@ -30,19 +30,12 @@ df = pd.DataFrame(
 st.subheader('今日のトレンドワード')
 st.bar_chart(df)
 
-text_score_list = []
-with open('tweet_ranking.csv', encoding='utf_8_sig', newline='') as f:
-    csvreader = csv.reader(f)
-    for row in csvreader:
-        text_score_list.append([row[0], row[1]])
-text_score_list = text_score_list[:7]
-
-st.subheader('今日の人気ツイート')
 html_links = []
 with open('html.csv', encoding='utf_8_sig', newline='') as f:
     csvreader = csv.reader(f)
     for row in csvreader:
         html_links.append(row[0])
 
+st.subheader('今日の人気ツイート')
 for html_link in html_links:
     stc.html(html_link)
