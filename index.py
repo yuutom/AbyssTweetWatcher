@@ -20,8 +20,8 @@ with open('word_count_result.csv', encoding='utf_8_sig', newline='') as f:
             if not row[0].isdigit():
                 word_list.append(row[0])
                 count_list.append(int(row[1]))
-word_list = word_list[:30]
-count_list = count_list[:30]
+word_list = word_list[:20]
+count_list = count_list[:20]
 
 df = pd.DataFrame(
     count_list,
