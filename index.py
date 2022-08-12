@@ -4,7 +4,7 @@ import pandas as pd
 from util.csv_util import CSVUtilClass
 import csv
 
-today = '2022年8月4日'
+today = '2022年8月12日'
 st.subheader('更新日：{}'.format(today))
 
 col1, col2 = st.columns(2)
